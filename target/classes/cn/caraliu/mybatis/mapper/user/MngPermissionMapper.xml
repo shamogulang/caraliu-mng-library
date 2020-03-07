@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.caraliu.mybatis.mapper.user.MngPermissionMapper">
+
+    <insert id="addPermission" parameterType="MngPermissionEntity" useGeneratedKeys="true" keyProperty="pk">
+        insert into mng_permission(`name`,`parent_pk`) values(#{name},#{parentPk})
+    </insert>
+
+    <update id="deletePermission" parameterType="long">
+        update mng_permission mp set mp.`status` = 0 where pk = #{pk}
+    </update>
+
+    <select id="findAdminPermission" resultType="MngPermissionEntity">
+        select mp.pk,mp.name,mp.parent_pk as parentPk from mng_permission mp where mp.status = 1;
+    </select>
+
+</mapper>

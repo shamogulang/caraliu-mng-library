@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.caraliu.mybatis.mapper.user.MngUserMapper">
+
+    <resultMap id="BaseResultMap" type="MngUserEntity">
+        <result property="pk" column="pk"/>
+        <result property="account" column="account"/>
+        <result property="password" column="password"/>
+        <result property="mobileNumber" column="mobile_number"/>
+        <result property="type" column="type"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+
+
+    <select id="findAll" resultMap="BaseResultMap">
+        SELECT * FROM `mng_user` WHERE `status` = 1
+    </select>
+
+    <select id="findOne" resultMap="BaseResultMap">
+        SELECT * FROM `mng_user` mu WHERE mu.pk = #{pk} and mu.status = 1
+    </select>
+
+    <select id="findByAccount" resultMap="BaseResultMap">
+        SELECT * FROM `mng_user` mu WHERE mu.account = #{account}
+    </select>
+
+    <insert id="insert" parameterType="MngUserEntity" useGeneratedKeys="true" keyProperty="pk">
+       insert into `mng_user`(nick_name,account,password,`type`,salt) values (#{nickName},#{account},#{password},#{type},#{salt})
+    </insert>
+
+    <insert id="batchInsert" parameterType="MngUserEntity">
+        insert into `mng_user`(user_nick,account,password,`type`) values
+        <foreach collection="mngUserEntities" item="item" index="index" separator=",">
+            (#{item.nickName}, #{item.account}, #{item.password},#{item.type})
+        </foreach>
+    </insert>
+
+    <update id="delete">
+        update `mng_user` mu set mu.`status` = 0 WHERE pk = #{pk};
+    </update>
+
+    <select id="findPermissionByUserPk" parameterType="long" resultType="MngPermissionEntity">
+        select mp.pk,mp.name,mp.parent_pk as parentPk from  mng_user_role mur
+          left join mng_role_permission mrp on mrp.status = 1 and mur.role_pk = mrp.role_pk
+            left join mng_permission mp
+               on mp.status = 1 and mp.pk= mrp.permission_pk where mur.user_pk = #{userPk}
+    </select>
+
+    <select id="findRoleByUserPk" parameterType="long" resultType="MngRoleEntity">
+        select mur.pk,mur.name,mur.`status` from mng_user_role mur where status = 1 and mur.user_pk = #{userPk}
+    </select>
+
+
+</mapper>

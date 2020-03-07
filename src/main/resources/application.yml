@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    include: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis:
+  config-location: classpath:cn/caraliu/mybatis/mybatis-config.xml
+  mapper-locations: classpath*:cn/caraliu/mybatis/mapper/**/*.xml
+
+server:
+  port: 8888
