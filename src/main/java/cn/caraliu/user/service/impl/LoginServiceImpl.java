@@ -2,7 +2,6 @@ package cn.caraliu.user.service.impl;
 
 import cn.caraliu.common.redis.Constant;
 import cn.caraliu.common.redis.utils.StringRedisUtils;
-import cn.caraliu.common.utils.JsonUtils;
 import cn.caraliu.common.utils.JwtUtils;
 import cn.caraliu.common.utils.Md5Utils;
 import cn.caraliu.exception.UserInvalidException;
@@ -12,22 +11,13 @@ import cn.caraliu.mybatis.domain.user.MngPermissionEntity;
 import cn.caraliu.mybatis.domain.user.MngUserEntity;
 import cn.caraliu.mybatis.mapper.user.MngPermissionMapper;
 import cn.caraliu.mybatis.mapper.user.MngUserMapper;
-import cn.caraliu.user.apibean.v1.LoginResp;
 import cn.caraliu.user.dto.LoginReqDto;
 import cn.caraliu.user.dto.LoginRespDto;
-import cn.caraliu.user.dto.MngPermissionDto;
+import cn.caraliu.user.dto.MngPermissionRespDto;
 import cn.caraliu.user.info.LoginUserTokenInfo;
 import cn.caraliu.user.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.RedisStringCommands;
-import org.springframework.data.redis.connection.StringRedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -93,12 +83,12 @@ public class LoginServiceImpl implements LoginService {
             String jwtToken = JwtUtils.generateJWT(String.valueOf(userEntity.getPk()), -1, tokenMaps);
 
             loginRespDto.setPk(userEntity.getPk());
-            loginRespDto.setJwt(jwtToken);
+            loginRespDto.setToken("Bearer "+jwtToken);
             loginRespDto.setUsername(userEntity.getNickName());
 
             //记录用户登录的历史信息
             //this.userJdbc.updateLatestLogin(userEntity.getId(), ip, this.tableNameConfig);
-            List<MngPermissionDto> mngPermissionDtos = new ArrayList<>();
+            List<MngPermissionRespDto> mngPermissionRespDtos = new ArrayList<>();
             List<MngPermissionEntity> mngPermissionEntities = null;
             if (userEntity.getType() == MngUserEntity.Type.MNG.ordinal()) {
                 mngPermissionEntities = mngPermissionMapper.findAdminPermission();
@@ -107,9 +97,9 @@ public class LoginServiceImpl implements LoginService {
             }
             if (!mngPermissionEntities.isEmpty()) {
                 mngPermissionEntities.forEach(x -> {
-                    mngPermissionDtos.add(new MngPermissionDto(x));
+                    mngPermissionRespDtos.add(new MngPermissionRespDto(x));
                 });
-                loginRespDto.setMngPermissionDtos(mngPermissionDtos);
+                loginRespDto.setMngPermissionRespDtos(mngPermissionRespDtos);
             }
         } catch (Exception e) {
             log.error("login error,for details:", e);

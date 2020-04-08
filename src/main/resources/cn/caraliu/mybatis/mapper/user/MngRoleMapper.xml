@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.caraliu.mybatis.mapper.user.MngRoleMapper">
+
+    <insert id="addRole" parameterType="MngRoleEntity" useGeneratedKeys="true" keyProperty="pk">
+        insert into mng_role(`name`) values(#{name})
+    </insert>
+
+    <update id="updateRole" parameterType="MngRoleEntity">
+        update mng_role mr set mr.`name` = #{name} where pk = #{pk}
+    </update>
+
+    <update id="deleteRole" parameterType="long">
+        update mng_role mr set mr.`status` = 0 where pk = #{rolePk}
+    </update>
+
+    <select id="findAll"  resultType="MngRoleEntity">
+        select mr.pk,mr.name,mr.created_at as createdAt from mng_role mr where mr.status = 1
+    </select>
+
+    <select id="findOne"  resultType="MngRoleEntity">
+        select mr.pk,mr.name,mr.created_at as createdAt from mng_role mr where mr.pk = #{rolePk}
+    </select>
+
+    <select id="getPermissions" resultType="MngPermissionEntity">
+        select mp.pk,mp.name,mp.value,mp.parent_pk as parentPk, mp.created_at as createdAt,mrp.role_pk as rolePk from
+        mng_role_permission mrp
+        left join mng_permission mp on mp.pk = mrp.permission_pk where mrp.status = 1
+        and mp.status = 1 and mrp.role_pk in
+        (
+            <foreach collection="rolePks" item="item" index="index" separator=",">
+                #{item}
+            </foreach>
+        )
+    </select>
+
+    <insert id="addRolePermission">
+        insert mng_role_permission(role_pk,permission_pk) values(#{rolePk},#{permissionPk})
+    </insert>
+
+    <update id="removeRolePermission">
+        update mng_role_permission mrp set mrp.status = 0 where mrp.role_pk = #{rolePk}
+          and mrp.permissionPk = #{permissionPk};
+    </update>
+
+    <select id="findRolePermission" resultType="int">
+        select mrp.pk  from mng_role_permission mrp  where mrp.role_pk = #{rolePk}
+          and mrp.permissionPk = #{permissionPk} and mrp.status = 1
+    </select>
+</mapper>

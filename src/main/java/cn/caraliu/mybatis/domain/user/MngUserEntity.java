@@ -4,6 +4,8 @@ import cn.caraliu.user.dto.MngUserReqDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @NoArgsConstructor
 @Data
 public class MngUserEntity {
@@ -16,8 +18,11 @@ public class MngUserEntity {
     private int status;
     private int type;
     private byte[] salt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
     public MngUserEntity(MngUserReqDto mngUserReqDto) {
+        this.pk = mngUserReqDto.getPk();
         this.nickName = mngUserReqDto.getNickName();
         this.account = mngUserReqDto.getAccount();
         this.mobileNumber = mngUserReqDto.getMobileNumber();

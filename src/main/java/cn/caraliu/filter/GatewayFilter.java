@@ -61,8 +61,8 @@ public class GatewayFilter extends OncePerRequestFilter {
         boolean checkJwt = true;
         // 前后端分离跨域允许设置
         response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-        response.setHeader("Access-Control-Allow-Headers", " Origin, X-Requested-With, Content-Type, Accept");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
+        response.setHeader("Access-Control-Allow-Headers", " Origin, X-Requested-With, Content-Type, Accept, Authorization, X-CARALIU-USER-PK");
         if (request.getMethod().equals("OPTIONS")) {
             response.setStatus(HttpStatus.OK.value());
             return;
@@ -102,15 +102,15 @@ public class GatewayFilter extends OncePerRequestFilter {
 
             if (mngPermissionEntities != null && !mngPermissionEntities.isEmpty()) {
                 List<GrantedAuthority> authorities = null;
-                StringBuffer permissionNames = new StringBuffer();
+                StringBuffer permissionValues = new StringBuffer();
                 mngPermissionEntities.forEach(x -> {
-                    if (permissionNames.length() == 0) {
-                        permissionNames.append(x.getName());
+                    if (permissionValues.length() == 0) {
+                        permissionValues.append(x.getValue());
                     } else {
-                        permissionNames.append("," + x.getName());
+                        permissionValues.append("," + x.getValue());
                     }
                 });
-                authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(permissionNames.toString());
+                authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(permissionValues.toString());
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(new AuthorizeUser(userPk, authorities), (Object) null, authorities);
                 authentication.setDetails((new WebAuthenticationDetailsSource()).buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);

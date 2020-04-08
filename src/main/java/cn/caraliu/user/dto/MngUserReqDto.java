@@ -16,6 +16,7 @@ public class MngUserReqDto {
     private int type;
 
     public MngUserReqDto(MngUserReq mngUserReq) {
+        this.pk = mngUserReq.getPk();
         this.nickName = mngUserReq.getNickName();
         this.account = mngUserReq.getAccount();
         this.password = mngUserReq.getPassword();

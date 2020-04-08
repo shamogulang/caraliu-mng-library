@@ -94,4 +94,14 @@ public class GlobalExceptionHandler {
         errorResponse.setErrorMessage(ErrorConstants.ERROR_LOGIN_USER_NOT_EXIST_MSG);
         return errorResponse;
     }
+
+    @ExceptionHandler(PermissionAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public CustomErrorResponse ermissionAlreadyExistException(PermissionAlreadyExistException exception) {
+        CustomErrorResponse errorResponse = new CustomErrorResponse();
+        errorResponse.setErrorCode(ErrorConstants.ERROR_PERMISSION_ALREADY_EXIST_CODE);
+        errorResponse.setErrorMessage(ErrorConstants.ERROR_PERMISSION_ALREADY_EXIST_MSG);
+        return errorResponse;
+    }
 }

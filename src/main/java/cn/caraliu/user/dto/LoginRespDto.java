@@ -11,6 +11,6 @@ public class LoginRespDto {
 
     private long pk;
     private String username;
-    private String jwt;
-    private List<MngPermissionDto>  mngPermissionDtos;
+    private String token;
+    private List<MngPermissionRespDto> mngPermissionRespDtos;
 }

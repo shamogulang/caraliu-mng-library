@@ -13,6 +13,7 @@ public interface ErrorConstants {
     int ERROR_LOGIN_USER_NOT_EXIST_CODE  =  10005;
     int ERROR_LOGIN_USER_INVALID_CODE  =  10006;
     int ERROR_LOGIN_USER_PASSWORD_MISMATCH_CODE  =  10007;
+    int ERROR_PERMISSION_ALREADY_EXIST_CODE = 10008;
 
     /**
      * 错误信息
@@ -25,5 +26,6 @@ public interface ErrorConstants {
     String ERROR_LOGIN_USER_NOT_EXIST_MSG   =  "用户不存在";
     String ERROR_LOGIN_USER_INVALID_MSG   =  "无效用户";
     String ERROR_LOGIN_USER_PASSWORD_MISMATCH_MSG   =  "用户或者密码不匹配";
+    String ERROR_PERMISSION_ALREADY_EXIST_MSG = "角色权限已经存在";
 
 }

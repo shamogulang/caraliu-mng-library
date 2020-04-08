@@ -1,4 +1,4 @@
-package cn.caraliu.user.controller;
+package cn.caraliu.user.controller.v1;
 
 import cn.caraliu.user.apibean.v1.LoginReq;
 import cn.caraliu.user.apibean.v1.LoginResp;

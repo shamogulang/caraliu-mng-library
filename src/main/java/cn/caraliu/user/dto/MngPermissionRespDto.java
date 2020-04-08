@@ -6,15 +6,19 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class MngPermissionDto {
+public class MngPermissionRespDto {
 
     private long pk;
     private long parentPk;
     private String name;
+    private String value;
+    private long createdAt;
 
-    public MngPermissionDto(MngPermissionEntity mngPermissionEntity) {
+    public MngPermissionRespDto(MngPermissionEntity mngPermissionEntity) {
         this.pk = mngPermissionEntity.getPk();
         this.parentPk = mngPermissionEntity.getParentPk();
         this.name = mngPermissionEntity.getName();
+        this.value = mngPermissionEntity.getValue();
+        this.createdAt = mngPermissionEntity.getCreatedAt().getTime();
     }
 }

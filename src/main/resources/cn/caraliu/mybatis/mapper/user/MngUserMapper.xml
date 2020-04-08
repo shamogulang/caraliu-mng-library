@@ -12,12 +12,29 @@
         <result property="type" column="type"/>
         <result property="nickName" column="nick_name"/>
         <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
     </resultMap>
-
 
 
     <select id="findAll" resultMap="BaseResultMap">
         SELECT * FROM `mng_user` WHERE `status` = 1
+    </select>
+
+    <select id="findMngUsers" resultMap="BaseResultMap">
+        SELECT * FROM `mng_user` mu WHERE mu.status = 1
+        <if test="mngUserSearchReqDto !=  null">
+            <if test="mngUserSearchReqDto.nickName != null and mngUserSearchReqDto.nickName != ''">
+                and mu.nick_name like CONCAT('%',#{mngUserSearchReqDto.nickName},'%')
+            </if>
+
+            <if test="mngUserSearchReqDto.mobileNumber != null and mngUserSearchReqDto.mobileNumber != ''">
+                and mu.mob ile_number like CONCAT('%',#{mngUserSearchReqDto.mobileNumber},'%')
+            </if>
+
+            <if test="mngUserSearchReqDto.type != null">
+                and mu.type = #{mngUserSearchReqDto.type}
+            </if>
+        </if>
     </select>
 
     <select id="findOne" resultMap="BaseResultMap">
@@ -27,6 +44,14 @@
     <select id="findByAccount" resultMap="BaseResultMap">
         SELECT * FROM `mng_user` mu WHERE mu.account = #{account}
     </select>
+
+    <update id="update">
+        update `mng_user` mu set mu.nick_name= #{mngUserEntity.nickName}, mu.type = #{mngUserEntity.type}
+        <if test="mngUserEntity != null and mngUserEntity.mobileNumber != null and mngUserEntity.mobileNumber != ''">
+            , mu.mobile_number = #{mngUserEntity.mobileNumber}
+        </if>
+        where mu.pk = #{mngUserEntity.pk}
+    </update>
 
     <insert id="insert" parameterType="MngUserEntity" useGeneratedKeys="true" keyProperty="pk">
        insert into `mng_user`(nick_name,account,password,`type`,salt) values (#{nickName},#{account},#{password},#{type},#{salt})
@@ -51,8 +76,19 @@
     </select>
 
     <select id="findRoleByUserPk" parameterType="long" resultType="MngRoleEntity">
-        select mur.pk,mur.name,mur.`status` from mng_user_role mur where status = 1 and mur.user_pk = #{userPk}
+        select mr.pk,mr.name,mur.created_at as createdAt from mng_user_role mur
+         left join mng_role mr on mr.pk = mur.role_pk where mur.status = 1 and mr.status = 1 and mur.user_pk = #{userPk}
     </select>
 
+    <update id="updateUserRole">
+        update `mng_user_role` mur set mur.role_pk = #{rolePk} where mur.user_pk = #{userPk}
+    </update>
 
+    <update id="deleteUserRole">
+        update `mng_user_role` mur set mur.status = 0 where mur.user_pk = #{userPk}
+    </update>
+
+    <insert id="insertUserRole">
+        insert into `mng_user_role`(user_pk,role_pk) values (#{userPk},#{rolePk})
+    </insert>
 </mapper>

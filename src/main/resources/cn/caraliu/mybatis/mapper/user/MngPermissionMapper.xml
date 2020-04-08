@@ -13,7 +13,7 @@
     </update>
 
     <select id="findAdminPermission" resultType="MngPermissionEntity">
-        select mp.pk,mp.name,mp.parent_pk as parentPk from mng_permission mp where mp.status = 1;
+        select mp.pk, mp.name, mp.value, mp.parent_pk as parentPk,mp.created_at as createdAt from mng_permission mp where mp.status = 1;
     </select>
 
 </mapper>
